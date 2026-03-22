@@ -34,8 +34,14 @@ export default async function middleware(request: NextRequest) {
   const { isEnabled: isDraftMode } = await draftMode()
 
   if (!isNextRoute && !isDraftMode) {
-    const internalPathname = buildInternalPathname(pathname, matchedLocale, I18N_CONFIG.defaultLocale)
+    const internalPathname = buildInternalPathname(
+      pathname,
+      matchedLocale,
+      I18N_CONFIG.defaultLocale,
+    )
     const abResponse = await resolveAbRewrite(request, pathname, pathname, internalPathname)
+
+    console.log('abResponse: ', abResponse, pathname, pathname, internalPathname)
 
     if (abResponse) {
       abResponse.headers.set('x-pathname', pathname)
