@@ -7,6 +7,7 @@ export const abAdapter = payloadGlobalAdapter<ABVariantData>({
   serverURL: getServerSideURL(),
 })
 
+//
 // export const abAdapter = vercelEdgeAdapter<ABVariantData>({
 //   configID: process.env.EDGE_CONFIG_ID!,
 //   configURL: process.env.EDGE_CONFIG!,
