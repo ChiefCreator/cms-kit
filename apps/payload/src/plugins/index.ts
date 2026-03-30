@@ -219,19 +219,32 @@ export const plugins: Plugin[] = [
   //   secret: process.env.CRON_SECRET!,
   // }) as unknown as Plugin,
 
-  translatorPlugin({
-    collections: [PageCollection, Posts, Categories, Authors, Testimonials, Header, Footer].map(
-      (col) => JSON.parse(JSON.stringify(col, (_, v) => (typeof v === 'function' ? undefined : v))),
-    ),
-    translationProvider: createOpenAIProvider({
-      apiKey: process.env.OPENAI_API_KEY!,
-      model: 'gpt-4o-mini',
-      systemPrompt: ({ defaultPrompt }) =>
-        `${defaultPrompt}\nUse formal language. Keep brand names unchanged.`,
-      dryRun: false,
-    }),
-    runner: createSyncRunner(),
-  }),
+  ...(process.env.OPENAI_API_KEY
+    ? [
+        translatorPlugin({
+          collections: [
+            PageCollection,
+            Posts,
+            Categories,
+            Authors,
+            Testimonials,
+            Header,
+            Footer,
+          ].map(
+            (col) =>
+              JSON.parse(JSON.stringify(col, (_, v) => (typeof v === 'function' ? undefined : v))),
+          ),
+          translationProvider: createOpenAIProvider({
+            apiKey: process.env.OPENAI_API_KEY,
+            model: 'gpt-4o-mini',
+            systemPrompt: ({ defaultPrompt }) =>
+              `${defaultPrompt}\nUse formal language. Keep brand names unchanged.`,
+            dryRun: false,
+          }),
+          runner: createSyncRunner(),
+        }),
+      ]
+    : []),
 
   abTestingPlugin<ABVariantData>({
     debug: isDev(),
